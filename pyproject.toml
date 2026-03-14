@@ -8,6 +8,11 @@ dependencies = [
     "datasets[vision]>=4.5.0",
     "huggingface-hub>=1.4.1",
     "ipykernel>=7.2.0",
+    "matplotlib>=3.10.8",
+    "mediapipe>=0.10.32",
+    "opencv-python>=4.13.0.92",
     "python-dotenv>=1.2.1",
+    "scikit-learn>=1.8.0",
+    "tensorflow>=2.21.0",
     "ultralytics>=8.4.14",
 ]
