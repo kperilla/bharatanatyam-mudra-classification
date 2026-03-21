@@ -125,7 +125,7 @@ def logging_csv(number, mode, landmark_list, point_history_list):
     if mode == 0:
         pass
     if mode == 1 and (0 <= number <= 9):
-        csv_path = 'yttutorial/tutmodel/keypoint_classifier/keypoint.csv'
+        csv_path = 'model/keypoint_classifier/keypoint.csv'
         with open(csv_path, 'a', newline="") as f:
             writer = csv.writer(f)
             writer.writerow([number, *landmark_list])
@@ -178,7 +178,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 540)
 
 keypoint_classifier = KeyPointClassifier()
 
-with open('yttutorial/tutmodel/keypoint_classifier/keypoint_classifier_label.csv',
+with open('model/keypoint_classifier/keypoint_classifier_label.csv',
           encoding='utf-8-sig') as f:
     keypoint_classifier_labels = csv.reader(f)
     keypoint_classifier_labels = [
