@@ -10,7 +10,7 @@ import numpy as np
 import copy
 import itertools
 import csv
-from tutmodel import KeyPointClassifier
+from model import KeyPointClassifier
 
 mp_hands = mp.tasks.vision.HandLandmarksConnections
 mp_drawing = mp.tasks.vision.drawing_utils
