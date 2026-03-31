@@ -74,12 +74,14 @@ def main():
     detector = vision.HandLandmarker.create_from_options(options)
 
     countdown_start = None
+    metrics_start = None
     countdown_duration = 3
     metrics_queue_ix = 0
 
     # Camera
     cap = cv2.VideoCapture(0)
     timestamp = 0
+    mode = 0
     while True:
         # Process Key (ESC: end) #################################################
         key = cv2.waitKey(10)
@@ -88,7 +90,7 @@ def main():
         # Start timer for metrics
         if key & 0xFF == ord('m'):
             countdown_start = time.time()
-        mode = 0
+
         # "n" is "normal mode" (0), "m" is "metrics mode" (1)
         mode = select_mode(key, mode)
 
@@ -99,8 +101,27 @@ def main():
         countdown_start = process_countdown(countdown_start, countdown_duration, frame)
 
         # Start tracking metrics
-        if mode == 1 and not countdown_start:
-            pass
+        if mode == 1 and not countdown_start and not metrics_start:
+            metrics_start = time.time()
+        if metrics_start is not None:
+            elapsed_in_metrics_countdown = time.time() - metrics_start
+            if elapsed_in_metrics_countdown < 10:
+                number = int(elapsed_in_metrics_countdown)
+                cv2.putText(
+                    frame,
+                    str(number),
+                    (frame.shape[1] * 3 // 4 - 30, frame.shape[0] * 3 // 4),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    5,
+                    (0, 255, 0),
+                    8,
+                )
+            else:
+                elapsed_in_metrics_countdown = 0
+                metrics_start = None
+                countdown_start = time.time()
+                metrics_queue_ix += 1
+                print(metrics_queue_ix)
 
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
