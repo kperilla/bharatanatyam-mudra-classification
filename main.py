@@ -11,7 +11,7 @@ from mediapipe.tasks.python import vision
 from mediapipe.tasks import python as mp_python
 
 
-METRICS_QUEUE = ['Sikharam', 'Tamarachudam', 'Sarpasirsha', 'Katakamukha_1', 'Tripathaka', 'Mukulam', 'Chandrakala']
+METRICS_QUEUE = ['Sikharam', 'Tamarachudam', 'Sarpasirsha', 'Katakamukha_1', 'Tripathaka', 'Mukulam', 'Chandrakala', 'Suchi']
 
 
 def extract_features(results):
@@ -77,6 +77,10 @@ def main():
     metrics_start = None
     countdown_duration = 3
     metrics_queue_ix = 0
+    metrics_results_dict = {}
+    total_frames_count = 0
+    valid_landmarks_count = 0
+    true_positive_classification_count = 0
 
     # Camera
     cap = cv2.VideoCapture(0)
@@ -120,8 +124,25 @@ def main():
                 elapsed_in_metrics_countdown = 0
                 metrics_start = None
                 countdown_start = time.time()
+                valid_landmark_ratio = valid_landmarks_count / total_frames_count
+                true_positive_classification_ratio = true_positive_classification_count / total_frames_count
+                print('total_frames', total_frames_count)
+                print('TP', true_positive_classification_count)
+                metrics_results_dict[metrics_queue_ix] = {
+                    'label': METRICS_QUEUE[metrics_queue_ix],
+                    'valid_landmarks_ratio': valid_landmark_ratio,
+                    'true_positive_classification_ratio': true_positive_classification_ratio,
+                }
+                print(metrics_results_dict[metrics_queue_ix])
+                print()
+                total_frames_count = 0
+                valid_landmarks_count = 0
+                true_positive_classification_count = 0
                 metrics_queue_ix += 1
-                print(metrics_queue_ix)
+                if metrics_queue_ix > len(METRICS_QUEUE):
+                    mode = 0
+                else:
+                    print(metrics_queue_ix, METRICS_QUEUE[metrics_queue_ix])
 
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -134,6 +155,8 @@ def main():
         timestamp += 1
 
         label_text = "No hand"
+        if metrics_start:
+            total_frames_count += 1
 
         if results.hand_landmarks:
             features = extract_features(results).reshape(1, -1)
@@ -141,9 +164,17 @@ def main():
             pred = model.predict(features, verbose=0)
             class_id = np.argmax(pred)
             confidence = np.max(pred)
+            classification = id_to_label[class_id]
 
             if confidence > 0.6:
-                label_text = f"{id_to_label[class_id]} ({confidence:.2f})"
+                label_text = f"{classification} ({confidence:.2f})"
+            else:
+                label_text = "Low Confidence"
+
+            if metrics_start:
+                valid_landmarks_count += 1
+                if classification == METRICS_QUEUE[metrics_queue_ix]:
+                    true_positive_classification_count += 1
 
         cv2.putText(frame, label_text, (20, 50),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
