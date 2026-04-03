@@ -139,7 +139,7 @@ def main():
                 valid_landmarks_count = 0
                 true_positive_classification_count = 0
                 metrics_queue_ix += 1
-                if metrics_queue_ix > len(METRICS_QUEUE):
+                if metrics_queue_ix >= len(METRICS_QUEUE):
                     mode = 0
                 else:
                     print(metrics_queue_ix, METRICS_QUEUE[metrics_queue_ix])
