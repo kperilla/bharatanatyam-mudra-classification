@@ -11,7 +11,7 @@ from mediapipe.tasks.python import vision
 from mediapipe.tasks import python as mp_python
 
 
-METRICS_QUEUE = ['Sikharam', 'Tamarachudam', 'Sarpasirsha', 'Katakamukha_1', 'Tripathaka', 'Mukulam', 'Chandrakala', 'Suchi']
+METRICS_QUEUE = ['Sikharam', 'Tamarachudam', 'Sarpasirsha', 'Katakamukha_1', 'Tripathaka', 'Mukulam', 'Chandrakala', 'Suchi', 'Simhamukham']
 
 
 def extract_features(results):
@@ -94,6 +94,7 @@ def main():
         # Start timer for metrics
         if key & 0xFF == ord('m'):
             countdown_start = time.time()
+            metrics_queue_ix = 0
 
         # "n" is "normal mode" (0), "m" is "metrics mode" (1)
         mode = select_mode(key, mode)
@@ -109,7 +110,7 @@ def main():
             metrics_start = time.time()
         if metrics_start is not None:
             elapsed_in_metrics_countdown = time.time() - metrics_start
-            if elapsed_in_metrics_countdown < 10:
+            if elapsed_in_metrics_countdown < 8:
                 number = int(elapsed_in_metrics_countdown)
                 cv2.putText(
                     frame,
@@ -141,6 +142,7 @@ def main():
                 metrics_queue_ix += 1
                 if metrics_queue_ix >= len(METRICS_QUEUE):
                     mode = 0
+                    metrics_queue_ix = 0
                 else:
                     print(metrics_queue_ix, METRICS_QUEUE[metrics_queue_ix])
 
