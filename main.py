@@ -25,7 +25,7 @@ def normalize_hand(hand_landmarks):
     if scale > 1e-6:
         pts /= scale
 
-    # Normalize by rotation: align wrist->middle MCP vector to point straight up (0, -1) ---
+    # Normalize by rotation: align wrist->middle MCP vector to point straight up (0, -1)
     ref = pts[9]
     angle = np.arctan2(ref[0], -ref[1])
 
