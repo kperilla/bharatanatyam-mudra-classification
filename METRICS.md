@@ -39,3 +39,22 @@ Suchi: 58.19672131147541
 Simhamukham: 39.37007874015748
 
 Average: 47.898% (70% improvement!)
+
+## Trying with a different gesture pattern
+
+Here, I went from right facing to left facing, while slightly rotating the hand in each gesture:
+
+
+{'label': 'Sikharam', 'valid_landmarks_ratio': 1.0, 'true_positive_classification_ratio': 0.5793650793650794}
+{'label': 'Tamarachudam', 'valid_landmarks_ratio': 1.0, 'true_positive_classification_ratio': 0.9448818897637795}
+{'label': 'Sarpasirsha', 'valid_landmarks_ratio': 1.0, 'true_positive_classification_ratio': 0.7795275590551181}
+{'label': 'Katakamukha_1', 'valid_landmarks_ratio': 1.0, 'true_positive_classification_ratio': 0.016}
+{'label': 'Tripathaka', 'valid_landmarks_ratio': 1.0, 'true_positive_classification_ratio': 0.7244094488188977}
+{'label': 'Mukulam', 'valid_landmarks_ratio': 1.0, 'true_positive_classification_ratio': 0.3779527559055118}
+{'label': 'Chandrakala', 'valid_landmarks_ratio': 1.0, 'true_positive_classification_ratio': 0.7952755905511811}
+{'label': 'Suchi', 'valid_landmarks_ratio': 1.0, 'true_positive_classification_ratio': 0.656}
+{'label': 'Simhamukham', 'valid_landmarks_ratio': 1.0, 'true_positive_classification_ratio': 0.44881889763779526}
+
+Now that gets you 59.14%
+
+I think you can make the argument, that no matter what you do, the head-on classification will always be inaccurate

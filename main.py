@@ -153,27 +153,52 @@ class MetricsController:
         print()
         print(f'Average: {percent_sum/len(self.metrics_results_dict)}')
 
+class LandmarkerController:
+    def __init__(self):
+        model_path = "googletutorial/hand_landmarker.task"
+
+        options = vision.HandLandmarkerOptions(
+            base_options=mp_python.BaseOptions(model_asset_path=model_path),
+            num_hands=2,
+            running_mode=vision.RunningMode.VIDEO
+        )
+
+        self.detector = vision.HandLandmarker.create_from_options(options)
+    
+    def detect_landmarks(self, image, timestamp):
+        results = self.detector.detect_for_video(image, timestamp)
+        return results
+
+class ClassifierController:
+    def __init__(self, model):
+        self.model = model
+
+        with open("labels.json") as f:
+            label_to_id = json.load(f)
+
+        self.id_to_label = {v:k for k,v in label_to_id.items()}
+    
+    def classify_from_landmarks(self, landmark_results):
+        features = extract_features(landmark_results).reshape(1, -1)
+
+        pred = self.model.predict(features, verbose=0)
+        class_id = np.argmax(pred)
+        confidence = np.max(pred)
+        classification = self.id_to_label[class_id]
+
+        if confidence > 0.6:
+            label_text = f"{classification} ({confidence:.2f})"
+        else:
+            label_text = "Low Confidence"
+        
+        return classification, label_text
+
 def main():
     # Load model
     model = keras.models.load_model("mudra_model.keras")
-
-    with open("labels.json") as f:
-        label_to_id = json.load(f)
-
-    id_to_label = {v:k for k,v in label_to_id.items()}
-
-    # MediaPipe
-    model_path = "googletutorial/hand_landmarker.task"
-
-    options = vision.HandLandmarkerOptions(
-        base_options=mp_python.BaseOptions(model_asset_path=model_path),
-        num_hands=2,
-        running_mode=vision.RunningMode.VIDEO
-    )
-
-    detector = vision.HandLandmarker.create_from_options(options)
-
+    landmarker = LandmarkerController()
     metrics = MetricsController()
+    classifier = ClassifierController(model)
 
     # Camera
     cap = cv2.VideoCapture(0)
@@ -187,46 +212,28 @@ def main():
         # Start timer for metrics
         if key & 0xFF == ord('m'):
             metrics.start_countdown()
-
         # "n" is "normal mode" (0), "m" is "metrics mode" (1)
         mode = select_mode(key, mode)
 
         ret, frame = cap.read()
-
         frame = cv2.flip(frame, 1)
-
-        metrics.process_countdown(frame)
-
-        # Start tracking metrics
-        mode = metrics.process_frame(mode, frame)
-
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
         mp_image = mp.Image(
             image_format=mp.ImageFormat.SRGB,
             data=rgb
         )
 
-        results = detector.detect_for_video(mp_image, timestamp)
+        results = landmarker.detect_landmarks(mp_image, timestamp)
         timestamp += 1
 
         label_text = "No hand"
 
+        metrics.process_countdown(frame)
+        mode = metrics.process_frame(mode, frame)
         metrics.update_frame_count()
 
         if results.hand_landmarks:
-            features = extract_features(results).reshape(1, -1)
-
-            pred = model.predict(features, verbose=0)
-            class_id = np.argmax(pred)
-            confidence = np.max(pred)
-            classification = id_to_label[class_id]
-
-            if confidence > 0.6:
-                label_text = f"{classification} ({confidence:.2f})"
-            else:
-                label_text = "Low Confidence"
-
+            classification, label_text = classifier.classify_from_landmarks(results)
             metrics.update_true_positive_rate(classification)
 
         cv2.putText(frame, label_text, (20, 50),
