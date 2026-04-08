@@ -14,17 +14,43 @@ from mediapipe.tasks import python as mp_python
 METRICS_QUEUE = ['Sikharam', 'Tamarachudam', 'Sarpasirsha', 'Katakamukha_1', 'Tripathaka', 'Mukulam', 'Chandrakala', 'Suchi', 'Simhamukham']
 
 
+def normalize_hand(hand_landmarks):
+    pts = np.array([[lm.x, lm.y] for lm in hand_landmarks])
+
+    # Normalize by translation
+    pts -= pts[0]
+
+    # Normalize by scale
+    scale = np.linalg.norm(pts[9])
+    if scale > 1e-6:
+        pts /= scale
+
+    # Normalize by rotation: align wrist->middle MCP vector to point straight up (0, -1) ---
+    ref = pts[9]
+    angle = np.arctan2(ref[0], -ref[1])
+
+    cos_a, sin_a = np.cos(angle), np.sin(angle)
+    R = np.array([
+        [cos_a, -sin_a],
+        [sin_a,  cos_a]
+    ])
+
+    # Neat operator for dot product: https://www.pythontutorials.net/blog/numpy-rotation-matrix/#use-operator-for-matrix-multiplication
+    pts = pts @ R.T
+
+    return pts.flatten()
+
+
 def extract_features(results):
     feats = []
 
     for hand in results.hand_landmarks[:2]:
-        for lm in hand:
-            feats.extend([lm.x, lm.y, lm.z])
+        feats.append(normalize_hand(hand))
 
-    while len(feats) < 126:
-        feats.extend([0]*63)
+    while len(feats) < 2:
+        feats.append(np.zeros(42))
 
-    return np.array(feats)
+    return np.concatenate(feats)
 
 def select_mode(key, mode):
     if key & 0xFF == ord('n'):
