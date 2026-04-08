@@ -24,3 +24,17 @@ Since one of the requirements for the report is to measure results, I thought of
 - For each frame that it classifies it correctly, it will increase a tally, and then the success rate will be that tally over total frames.
 - It will then cycle through a few of the Mudras automatically, and save the success rates for those classifications.
 - I hesitate to use all of the Mudras in the training set, just because I don't know how to do some of them.
+
+## Data Augmentation
+https://arxiv.org/html/2406.03729v1
+
+Try some operations on the training data to add more variety and reduct overfitting
+From article:
+• Random rotation of images by 10 degrees
+• Random zoom on images by 10
+• Random horizontal shift of images by 10width.
+• Random vertical shift of images by 10
+
+## Different models
+Try some CNNs
+Try the MobileNetV2 from the paper, and try some multi-modal models
