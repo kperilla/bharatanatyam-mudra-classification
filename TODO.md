@@ -6,6 +6,8 @@ Mediapipe can be inconsistent with keeping track of the hands, so some image pre
 - Improve contrast
 - Add gaussian blur to reduce noise
 
+For multimodal, some image preprocessing/feature extraction on the images (https://arxiv.org/html/2406.03729v1#S3 in 3.1.3Feature Extraction and Preprocessing)
+
 ## Landmarks Preprocessing
 - Normalize coordinates by position (it shouldn't matter what part of the frame the hands are)
 - Normalize by scale (to cover larger/smaller hands or distance from camera)

@@ -164,7 +164,7 @@ class LandmarkerController:
         )
 
         self.detector = vision.HandLandmarker.create_from_options(options)
-    
+
     def detect_landmarks(self, image, timestamp):
         results = self.detector.detect_for_video(image, timestamp)
         return results
@@ -177,7 +177,7 @@ class ClassifierController:
             label_to_id = json.load(f)
 
         self.id_to_label = {v:k for k,v in label_to_id.items()}
-    
+
     def classify_from_landmarks(self, landmark_results):
         features = extract_features(landmark_results).reshape(1, -1)
 
@@ -190,7 +190,7 @@ class ClassifierController:
             label_text = f"{classification} ({confidence:.2f})"
         else:
             label_text = "Low Confidence"
-        
+
         return classification, label_text
 
 def main():
