@@ -14,6 +14,39 @@ from mediapipe.tasks import python as mp_python
 METRICS_QUEUE = ['Sikharam', 'Tamarachudam', 'Sarpasirsha', 'Katakamukha_1', 'Tripathaka', 'Mukulam', 'Chandrakala', 'Suchi', 'Simhamukham']
 
 
+def compute_finger_angles(pts):
+    """Compute the angle at each finger joint using dot products."""
+    # Finger joint indices: [base, mid, tip] for each finger
+    fingers = [
+        [1, 2, 3, 4],    # thumb
+        [5, 6, 7, 8],    # index
+        [9, 10, 11, 12], # middle
+        [13, 14, 15, 16],# ring
+        [17, 18, 19, 20] # pinky
+    ]
+
+    angles = []
+    for finger in fingers:
+        for i in range(len(finger) - 2):
+            a = pts[finger[i]]
+            b = pts[finger[i+1]]
+            c = pts[finger[i+2]]
+
+            ba = a - b
+            bc = c - b
+
+            cos_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc) + 1e-6)
+            angle = np.arccos(np.clip(cos_angle, -1, 1))
+            angles.append(angle)
+
+    return np.array(angles)  # len = 10: 2 angles per finger
+
+
+def compute_fingertip_distances(pts):
+    """Distance from each fingertip to the wrist."""
+    fingertips = [4, 8, 12, 16, 20]
+    return np.array([np.linalg.norm(pts[i]) for i in fingertips])  # len = 5
+
 def normalize_hand(hand_landmarks):
     pts = np.array([[lm.x, lm.y] for lm in hand_landmarks])
 
@@ -35,11 +68,15 @@ def normalize_hand(hand_landmarks):
         [sin_a,  cos_a]
     ])
 
-    # Neat operator for dot product: https://www.pythontutorials.net/blog/numpy-rotation-matrix/#use-operator-for-matrix-multiplication
     pts = pts @ R.T
 
-    return pts.flatten()
+    # Use the normalized landmark data to get more features like finger angles and tip distances to wrist
+    coords    = pts.flatten()
+    angles    = compute_finger_angles(pts)
+    distances = compute_fingertip_distances(pts)
 
+
+    return np.concatenate([coords, angles, distances])
 
 def extract_features(results):
     feats = []
@@ -48,7 +85,7 @@ def extract_features(results):
         feats.append(normalize_hand(hand))
 
     while len(feats) < 2:
-        feats.append(np.zeros(42))
+        feats.append(np.zeros(57))
 
     return np.concatenate(feats)
 
