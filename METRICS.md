@@ -12,6 +12,8 @@ For consistency, we have tried to put the camera in the same position, and rotat
 - facing left,
 - facing right
 
+(edit: I stopped using this and just use the side-to-side method from below)
+
 One thing I've noticed is that the facing left and facing right are way more accurate
 
 ## Using the feature extraction + neural network
@@ -58,3 +60,44 @@ Here, I went from right facing to left facing, while slightly rotating the hand 
 Now that gets you 59.14%
 
 I think you can make the argument, that no matter what you do, the head-on classification will always be inaccurate
+
+## Hyperparameter grid-search results
+WARNING:tensorflow:TensorFlow GPU support is not available on native Windows for TensorFlow >= 2.11. Even if CUDA/cuDNN are installed, GPU will not be used. Please use WSL2 or the TensorFlow-DirectML plugin.
+units=(256, 128), dropout=0.2, lr=0.001, bn=True -> 0.9189
+units=(256, 128), dropout=0.2, lr=0.001, bn=False -> 0.9316
+units=(256, 128), dropout=0.2, lr=0.0003, bn=True -> 0.9416
+units=(256, 128), dropout=0.2, lr=0.0003, bn=False -> 0.9112
+units=(256, 128), dropout=0.3, lr=0.001, bn=True -> 0.9244
+units=(256, 128), dropout=0.3, lr=0.001, bn=False -> 0.9334
+units=(256, 128), dropout=0.3, lr=0.0003, bn=True -> 0.9221
+units=(256, 128), dropout=0.3, lr=0.0003, bn=False -> 0.8936
+units=(256, 128), dropout=0.4, lr=0.001, bn=True -> 0.9117
+units=(256, 128), dropout=0.4, lr=0.001, bn=False -> 0.9185
+units=(256, 128), dropout=0.4, lr=0.0003, bn=True -> 0.9090
+units=(256, 128), dropout=0.4, lr=0.0003, bn=False -> 0.8822
+units=(512, 256), dropout=0.2, lr=0.001, bn=True -> 0.9303
+units=(512, 256), dropout=0.2, lr=0.001, bn=False -> 0.9438
+units=(512, 256), dropout=0.2, lr=0.0003, bn=True -> 0.9538
+units=(512, 256), dropout=0.2, lr=0.0003, bn=False -> 0.9348
+units=(512, 256), dropout=0.3, lr=0.001, bn=True -> 0.9429
+units=(512, 256), dropout=0.3, lr=0.001, bn=False -> 0.9407
+units=(512, 256), dropout=0.3, lr=0.0003, bn=True -> 0.9420
+units=(512, 256), dropout=0.3, lr=0.0003, bn=False -> 0.9398
+units=(512, 256), dropout=0.4, lr=0.001, bn=True -> 0.9289
+units=(512, 256), dropout=0.4, lr=0.001, bn=False -> 0.9497
+units=(512, 256), dropout=0.4, lr=0.0003, bn=True -> 0.9361
+units=(512, 256), dropout=0.4, lr=0.0003, bn=False -> 0.9221
+units=(256, 256, 128), dropout=0.2, lr=0.001, bn=True -> 0.9266
+units=(256, 256, 128), dropout=0.2, lr=0.001, bn=False -> 0.9497
+units=(256, 256, 128), dropout=0.2, lr=0.0003, bn=True -> 0.9425
+units=(256, 256, 128), dropout=0.2, lr=0.0003, bn=False -> 0.9380
+units=(256, 256, 128), dropout=0.3, lr=0.001, bn=True -> 0.9067
+units=(256, 256, 128), dropout=0.3, lr=0.001, bn=False -> 0.9411
+units=(256, 256, 128), dropout=0.3, lr=0.0003, bn=True -> 0.9416
+units=(256, 256, 128), dropout=0.3, lr=0.0003, bn=False -> 0.9216
+units=(256, 256, 128), dropout=0.4, lr=0.001, bn=True -> 0.9108
+units=(256, 256, 128), dropout=0.4, lr=0.001, bn=False -> 0.9289
+units=(256, 256, 128), dropout=0.4, lr=0.0003, bn=True -> 0.9221
+units=(256, 256, 128), dropout=0.4, lr=0.0003, bn=False -> 0.8972
+
+Best config: {'units': (512, 256), 'dropout': 0.2, 'lr': 0.0003, 'batch_norm': True, 'val_accuracy': 0.9538043737411499}
