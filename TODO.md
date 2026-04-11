@@ -6,6 +6,8 @@ Mediapipe can be inconsistent with keeping track of the hands, so some image pre
 - Improve contrast
 - Add gaussian blur to reduce noise
 
+For multimodal, some image preprocessing/feature extraction on the images (https://arxiv.org/html/2406.03729v1#S3 in 3.1.3Feature Extraction and Preprocessing)
+
 ## Landmarks Preprocessing
 - Normalize coordinates by position (it shouldn't matter what part of the frame the hands are)
 - Normalize by scale (to cover larger/smaller hands or distance from camera)
@@ -24,3 +26,17 @@ Since one of the requirements for the report is to measure results, I thought of
 - For each frame that it classifies it correctly, it will increase a tally, and then the success rate will be that tally over total frames.
 - It will then cycle through a few of the Mudras automatically, and save the success rates for those classifications.
 - I hesitate to use all of the Mudras in the training set, just because I don't know how to do some of them.
+
+## Data Augmentation
+https://arxiv.org/html/2406.03729v1
+
+Try some operations on the training data to add more variety and reduct overfitting
+From article:
+• Random rotation of images by 10 degrees
+• Random zoom on images by 10
+• Random horizontal shift of images by 10width.
+• Random vertical shift of images by 10
+
+## Different models
+Try some CNNs
+Try the MobileNetV2 from the paper, and try some multi-modal models
