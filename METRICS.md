@@ -61,6 +61,20 @@ Now that gets you 59.14%
 
 I think you can make the argument, that no matter what you do, the head-on classification will always be inaccurate
 
+## Trying with new features (finger angles and fingertip-wrist distances)
+
+Sikharam: 0.7322834645669292
+Tamarachudam: 0.7165354330708661
+Sarpasirsha: 0.800524934383202
+Katakamukha_1: 0.7598425196850394
+Tripathaka: 0.7196850393700788
+Mukulam: 0.7043363994743759
+Chandrakala: 0.6914414414414415
+Suchi: 0.6314229249011858
+Simhamukham: 0.6444249341527656
+
+Average: 0.7111663434495428
+
 ## Hyperparameter grid-search results
 WARNING:tensorflow:TensorFlow GPU support is not available on native Windows for TensorFlow >= 2.11. Even if CUDA/cuDNN are installed, GPU will not be used. Please use WSL2 or the TensorFlow-DirectML plugin.
 units=(256, 128), dropout=0.2, lr=0.001, bn=True -> 0.9189
