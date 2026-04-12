@@ -115,3 +115,19 @@ units=(256, 256, 128), dropout=0.4, lr=0.0003, bn=True -> 0.9221
 units=(256, 256, 128), dropout=0.4, lr=0.0003, bn=False -> 0.8972
 
 Best config: {'units': (512, 256), 'dropout': 0.2, 'lr': 0.0003, 'batch_norm': True, 'val_accuracy': 0.9538043737411499}
+
+
+## Putting it all together:
+Sikharam: 0.7560975609756098
+Tamarachudam: 0.7418032786885246
+Sarpasirsha: 0.8278688524590164
+Katakamukha_1: 0.7157464212678937
+Tripathaka: 0.7536945812807881
+Mukulam: 0.7928669410150891
+Chandrakala: 0.753810082063306
+Suchi: 0.763617677286742
+Simhamukham: 0.7137648131267093
+
+Average: 0.757696689795964
+
+75%!
